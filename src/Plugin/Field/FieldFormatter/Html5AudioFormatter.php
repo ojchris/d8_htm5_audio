@@ -24,7 +24,7 @@ class Html5AudioFormatter extends FormatterBase {
    */
   public static function defaultSettings() {
     return [
-      'foo' => 'bar',
+      'autoplayStatus' => '0',
     ] + parent::defaultSettings();
   }
 
@@ -33,10 +33,18 @@ class Html5AudioFormatter extends FormatterBase {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
 
+    /*
     $elements['foo'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Foo'),
       '#default_value' => $this->getSetting('foo'),
+    ];
+    */
+
+    $elements['autoplayStatus'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable Autoplay'),
+      '#default_value' => $this->getSetting('autoplayStatus'),
     ];
 
     return $elements;
@@ -46,7 +54,17 @@ class Html5AudioFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary[] = $this->t('Foo: @foo', ['@foo' => $this->getSetting('foo')]);
+    $summary = [];
+    //$summary[] = $this->t('Foo: @foo', ['@foo' => $this->getSetting('foo')]);
+    
+    $settings = $this->getSettings();
+    if ($settings['autoplayStatus']) {
+      $summary[] = $this->t('Autoplay is enabled.');
+    }
+    else {
+      $summary[] = $this->t('Autoplay is not enabled.');
+    }
+    //$summary[] = $this->t('autoplay: @autoplay', ['@autoplay' => $this->getSetting('autoplay')]);
     return $summary;
   }
 
@@ -67,10 +85,17 @@ class Html5AudioFormatter extends FormatterBase {
       ];
    }
 
+    // Configuration.
+    $autoplay = '';
+    if ($this->getSetting('autoplayStatus')) {
+      $autoplay = 'autoplay';
+    }
+
    // Put everything in an array for theming.
     $elements[] = [
       '#theme' => 'audio_tag',
       '#sources' => $sources,
+      '#autoplay' => $autoplay,
     ];
 
    return $elements;

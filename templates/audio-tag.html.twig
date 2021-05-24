@@ -1,4 +1,4 @@
-<audio controls preload="metadata">
+<audio controls {{ autoplay }} preload="metadata">
     {% for source in sources %}
         <source src="{{ source.src }}" type="{{ source.mimetype }}" />
     {% endfor %}
